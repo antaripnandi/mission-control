@@ -1,71 +1,20 @@
 {
-  "lastUpdated": "2026-03-08T15:15:49.000Z",
-  "cronJobs": [
-    {
-      "agentId": "main",
-      "createdAtMs": 1772958824920,
-      "enabled": true,
-      "id": "c5a64e46-e2bd-49c5-9571-0e1493b4c0c5",
-      "name": "heartbeat-25min",
-      "payload": {
-        "kind": "systemEvent",
-        "text": "heartbeat"
-      },
-      "schedule": {
-        "anchorMs": 1772958824920,
-        "everyMs": 1500000,
-        "kind": "every"
-      },
-      "sessionTarget": "main",
-      "state": {
-        "consecutiveErrors": 0,
-        "lastDeliveryStatus": "not-requested",
-        "lastDurationMs": 20340,
-        "lastRunAtMs": 1772982196127,
-        "lastRunStatus": "ok",
-        "lastStatus": "ok",
-        "nextRunAtMs": 1772983696127
-      },
-      "updatedAtMs": 1772982216467,
-      "wakeMode": "now"
-    },
-    {
-      "agentId": "main",
-      "createdAtMs": 1772975728743,
-      "deleteAfterRun": true,
-      "enabled": true,
-      "id": "74363a80-49bb-4f3b-9c9b-273e1b72cde7",
-      "name": "google-calendar-test-reminder",
-      "payload": {
-        "kind": "systemEvent",
-        "text": "hey antarip! just a friendly reminder from your OpenClaw buddy: \"this is a test\" (for your Google Calendar reminder)."
-      },
-      "schedule": {
-        "at": "2026-03-10T08:30:00.000Z",
-        "kind": "at"
-      },
-      "sessionTarget": "main",
-      "state": {
-        "nextRunAtMs": 1773131400000
-      },
-      "updatedAtMs": 1772975728743,
-      "wakeMode": "now"
-    }
-  ],
+  "lastUpdated": "2026-03-10T00:22:50.000Z",
+  "currentSession": {
+    "model": "litellm/gemini",
+    "tokensIn": 17000,
+    "tokensOut": 1000,
+    "cost": "$0.0000",
+    "contextUsage": "9%",
+    "sessionKey": "agent:main:main"
+  },
   "activeSessions": [
     {
-      "abortedLastRun": false,
-      "channel": "whatsapp",
-      "contextTokens": 200000,
-      "kind": "other",
-      "lastAccountId": "default",
-      "lastChannel": "whatsapp",
-      "lastTo": "+917908553568",
+      "key": "agent:main:main",
+      "displayName": "openclaw-tui",
       "model": "gemini",
-      "sessionId": "45a593b7-2b17-432d-aee1-cf73bd6d9c6d",
-      "systemSent": true,
-      "totalTokens": 113972,
-      "updatedAt": 1772982947339
+      "totalTokens": 16925,
+      "updatedAt": "2026-03-10T00:22:49.411Z"
     }
   ]
 }
