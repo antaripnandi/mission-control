@@ -1,20 +1,105 @@
 {
-  "lastUpdated": "2026-03-10T00:30:15.000Z",
-  "currentSession": {
-    "model": "litellm/gemini",
-    "tokensIn": 17000,
-    "tokensOut": 1000,
-    "cost": "$0.0000",
-    "contextUsage": "9%",
-    "sessionKey": "agent:main:main"
+  "lastUpdated": "2026-03-11T17:58:11.709Z",
+  "connectionStatus": "polling",
+  "actionRequired": [],
+  "stats": {
+    "totalProducts": 2,
+    "activeCrons": 2,
+    "pausedCrons": 0,
+    "errorCrons": 0,
+    "activeSubagents": 1,
+    "totalTokens": 15000,
+    "totalCost": "$0.15"
+  },
+  "planner": {
+    "currentGoal": "Improve Mission Control Dashboard",
+    "lastAction": "Generated Python script for dashboard data updates.",
+    "thoughtProcess": "Next, I need to execute this script and then set up a recurring cron job for it."
   },
   "activeSessions": [
     {
       "key": "agent:main:main",
-      "displayName": "openclaw-tui",
-      "model": "gemini",
-      "totalTokens": 16925,
-      "updatedAt": "2026-03-10T00:30:15.000Z"
+      "displayName": "Main Agent",
+      "model": "litellm/gemini",
+      "task": "Working on dashboard updates.",
+      "status": "active",
+      "startTime": "2026-03-11T23:00:00.000Z",
+      "lastActivity": "2026-03-11T23:35:00.000Z",
+      "tokens": 15000,
+      "cost": "$0.15",
+      "logs": [
+        "23:35:00 - Working on dashboard updates."
+      ]
+    }
+  ],
+  "subagents": [
+    {
+      "id": "subagent-123",
+      "label": "Researcher",
+      "task": "Gathering interactive dashboard design ideas.",
+      "model": "litellm/groq",
+      "status": "running",
+      "startTime": "2026-03-11T23:28:45.000Z",
+      "endTime": null,
+      "output": "Found several examples of responsive grids and agent cards.",
+      "logs": [
+        "23:28:45 - Task started: Gathering interactive dashboard design ideas.",
+        "17:58:11 - Status: running"
+      ]
+    },
+    {
+      "id": "subagent-456",
+      "label": "Coder",
+      "task": "Implementing UI changes for planner card.",
+      "model": "litellm/codex",
+      "status": "completed",
+      "startTime": "2026-03-11T23:30:00.000Z",
+      "endTime": "2026-03-11T17:58:11.709Z",
+      "output": "Updated index.html successfully.",
+      "logs": [
+        "23:30:00 - Task started: Implementing UI changes for planner card.",
+        "17:58:11 - Status: completed"
+      ]
+    }
+  ],
+  "products": [
+    {
+      "name": "OpenClaw Gateway",
+      "url": "http://localhost:8080",
+      "status": "live",
+      "lastChecked": "2026-03-11T17:58:11.709Z"
+    },
+    {
+      "name": "ClawHub",
+      "url": "https://clawhub.com",
+      "status": "live",
+      "lastChecked": "2026-03-11T17:58:11.709Z"
+    }
+  ],
+  "crons": [
+    {
+      "name": "Daily Heartbeat Check",
+      "schedule": "every 24h",
+      "status": "ok",
+      "errors": 0,
+      "lastError": null
+    },
+    {
+      "name": "Dashboard Update",
+      "schedule": "every 5m",
+      "status": "ok",
+      "errors": 0,
+      "lastError": null
+    }
+  ],
+  "recentActivity": [
+    {
+      "time": "2026-03-11T17:58:11.709Z",
+      "event": "Dashboard data updated."
+    },
+    {
+      "time": "2026-03-11T17:58:11.709Z",
+      "event": "Python script executed for data generation."
     }
   ]
 }
