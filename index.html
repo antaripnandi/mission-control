@@ -527,7 +527,7 @@
             }
 
             // Stats Row
-            const statsRow = document.getElementById(\'main-stats-row\');
+            const statsRow = document.getElementById('main-stats-row');
             if (data.stats) {
                 statsRow.innerHTML = `
                     <div class=\"stat-pill\"><span class=\"num\">${data.stats.totalProducts || 0}</span><span class=\"label\">Products</span></div>
@@ -560,7 +560,7 @@
                 activeSessionsDiv.innerHTML = data.activeSessions.map(session => {
                     const started = new Date(session.startTime);
                     const mins = Math.floor((now - started) / 60000);
-                    const logsHtml = session.logs ? session.logs.map(log => `<div class=\"log-item\">${escapeHtml(log)}</div>`).join('') : '';
+                    const logsHtml = session.logs ? session.logs.map(log => `<div class="log-item">${escapeHtml(log)}</div>`).join('') : '';
                     return `
                         <div class=\"active-task\">
                             <div class=\"active-indicator\"></div>
@@ -582,7 +582,7 @@
                 activeSubagentsDiv.innerHTML = data.subagents.map(subagent => {
                     const started = new Date(subagent.startTime);
                     const mins = Math.floor((now - started) / 60000);
-                    const logsHtml = subagent.logs ? subagent.logs.map(log => `<div class=\"log-item\">${escapeHtml(log)}</div>`).join('') : '';
+                    const logsHtml = subagent.logs ? subagent.logs.map(log => `<div class="log-item">${escapeHtml(log)}</div>`).join('') : '';
                     return `
                         <div class=\"active-task\">
                             <div class=\"active-indicator\"></div>
