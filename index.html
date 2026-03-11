@@ -317,7 +317,7 @@
             <h2>🔐 Mission Control</h2>
             <p>Enter your PIN to access the dashboard</p>
             <input type="password" id="pin-input" placeholder="••••••" maxlength="20" autofocus aria-label="PIN input">
-            <button onclick="checkPassword()">Access Dashboard</button>
+            <button id="access-dashboard-btn">Access Dashboard</button>
             <p class="password-error" id="password-error">Incorrect PIN. Try again.</p>
         </div>
     </div>
@@ -449,6 +449,8 @@
                 pinInput.focus();
             }
         }
+
+        document.getElementById('access-dashboard-btn').addEventListener('click', checkPassword);
 
         document.getElementById('pin-input').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') checkPassword();
