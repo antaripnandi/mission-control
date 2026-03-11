@@ -560,15 +560,15 @@
                 activeSessionsDiv.innerHTML = data.activeSessions.map(session => {
                     const started = new Date(session.startTime);
                     const mins = Math.floor((now - started) / 60000);
-                    const logsHtml = session.logs ? session.logs.map(log => `<div class=\"log-item\">${escapeHtml(log)}</div>`).join(\'\') : \'\';
+                    const logsHtml = session.logs ? session.logs.map(log => `<div class=\"log-item\">${escapeHtml(log)}</div>`).join('') : '';
                     return `
-                        <div class=\"active-task\">\
-                            <div class=\"active-indicator\"></div>\
-                            <div class=\"active-task-info\">\
-                                <div class=\"active-task-name\">Main Session: ${escapeHtml(session.displayName || session.key)}</div>\
-                                <div class=\"active-task-meta\">${escapeHtml(session.task || \'N/A\')} · ${escapeHtml(session.model || \'\')} · ${mins}m</div>\
-                                <div class=\"task-logs\">${logsHtml}</div>\
-                            </div>\
+                        <div class=\"active-task\">
+                            <div class=\"active-indicator\"></div>
+                            <div class=\"active-task-info\">
+                                <div class=\"active-task-name\">Main Session: ${escapeHtml(session.displayName || session.key)}</div>
+                                <div class=\"active-task-meta\">${escapeHtml(session.task || 'N/A')} · ${escapeHtml(session.model || '')} · ${mins}m</div>
+                                ${logsHtml ? `<div class=\"task-logs\">${logsHtml}</div>` : ''}
+                            </div>
                         </div>
                     `;
                 }).join(\'\');
@@ -582,15 +582,15 @@
                 activeSubagentsDiv.innerHTML = data.subagents.map(subagent => {
                     const started = new Date(subagent.startTime);
                     const mins = Math.floor((now - started) / 60000);
-                    const logsHtml = subagent.logs ? subagent.logs.map(log => `<div class=\"log-item\">${escapeHtml(log)}</div>`).join(\'\') : \'\';
+                    const logsHtml = subagent.logs ? subagent.logs.map(log => `<div class=\"log-item\">${escapeHtml(log)}</div>`).join('') : '';
                     return `
-                        <div class=\"active-task\">\
-                            <div class=\"active-indicator\"></div>\
-                            <div class=\"active-task-info\">\
-                                <div class=\"active-task-name\">Subagent: ${escapeHtml(subagent.label || subagent.id)}</div>\
-                                <div class=\"active-task-meta\">${escapeHtml(subagent.task || \'N/A\')} · ${escapeHtml(subagent.model || \'\')} · ${mins}m</div>\
-                                <div class=\"task-logs\">${logsHtml}</div>\
-                            </div>\
+                        <div class=\"active-task\">
+                            <div class=\"active-indicator\"></div>
+                            <div class=\"active-task-info\">
+                                <div class=\"active-task-name\">Subagent: ${escapeHtml(subagent.label || subagent.id)}</div>
+                                <div class=\"active-task-meta\">${escapeHtml(subagent.task || 'N/A')} · ${escapeHtml(subagent.model || '')} · ${mins}m</div>
+                                ${logsHtml ? `<div class=\"task-logs\">${logsHtml}</div>` : ''}
+                            </div>
                         </div>
                     `;
                 }).join(\'\');
