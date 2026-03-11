@@ -412,7 +412,7 @@
         // CONFIGURATION — Edit these values
         // ============================================
         const CONFIG = {
-            PIN: '0000',  // Change this!
+            PIN: '13579',  // Change this!
             DATA_URL: './data/dashboard-data.json',  // Path to your JSON file
             REFRESH_INTERVAL: 30000  // 30 seconds
         };
@@ -423,15 +423,30 @@
 
         function checkPassword() {
             const input = document.getElementById('pin-input').value;
+            const passwordError = document.getElementById('password-error');
+            const pinInput = document.getElementById('pin-input');
+
+            passwordError.style.display = 'none'; // Clear previous error
+            passwordError.style.color = 'var(--accent-red)'; // Reset color
+
             if (input === CONFIG.PIN) {
-                document.getElementById('password-overlay').style.display = 'none';
-                document.getElementById('main-content').style.display = 'block';
-                sessionStorage.setItem('mc_authenticated', 'true');
-                initDashboard();
+                passwordError.textContent = '✅ Correct PIN!';
+                passwordError.style.color = 'var(--accent-green)'; // Change to green for success
+                passwordError.style.display = 'block';
+                pinInput.value = ''; // Clear input for next time
+
+                // Briefly show success message before transitioning
+                setTimeout(() => {
+                    document.getElementById('password-overlay').style.display = 'none';
+                    document.getElementById('main-content').style.display = 'block';
+                    sessionStorage.setItem('mc_authenticated', 'true');
+                    initDashboard();
+                }, 1000); // 1-second delay
             } else {
-                document.getElementById('password-error').style.display = 'block';
-                document.getElementById('pin-input').value = '';
-                document.getElementById('pin-input').focus();
+                passwordError.textContent = '❌ Incorrect PIN. Try again.';
+                passwordError.style.display = 'block';
+                pinInput.value = '';
+                pinInput.focus();
             }
         }
 
