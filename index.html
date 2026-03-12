@@ -75,7 +75,7 @@
         }
         .password-box button:hover { opacity: 0.9; }
         .password-error { color: var(--accent-red); font-size: 0.875rem; margin-top: 12px; display: none; }
-        
+
         .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
         header {
             display: flex; justify-content: space-between; align-items: center;
@@ -98,9 +98,10 @@
             border: 1px solid var(--border);
             border-radius: 20px;
             font-size: 0.8rem; font-weight: 500;
-            color: var(--accent-yellow);
-            border-color: var(--accent-yellow);
         }
+        .connection-status.ok { color: var(--accent-green); border-color: var(--accent-green); }
+        .connection-status.error { color: var(--accent-red); border-color: var(--accent-red); }
+        .connection-status.polling { color: var(--accent-yellow); border-color: var(--accent-yellow); }
         .status-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
         .last-updated { color: var(--text-muted); font-size: 0.875rem; }
         .refresh-btn {
@@ -122,7 +123,7 @@
         .refresh-btn.loading .spinner { display: inline; }
         .refresh-btn.loading .icon { display: none; }
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        
+
         .alert-banner {
             background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(249,115,22,0.15));
             border: 1px solid rgba(239,68,68,0.3);
@@ -150,10 +151,10 @@
         .priority.low { background: var(--accent-yellow); color: black; }
         .alert-item a { color: var(--accent-blue); font-size: 0.875rem; text-decoration: none; }
         .alert-item a:hover { text-decoration: underline; }
-        
+
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px; margin-bottom: 24px; }
         @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
-        
+
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -163,7 +164,7 @@
         .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
         .card-header h2 { font-size: 1rem; font-weight: 600; color: var(--text-secondary); }
         .card-header .icon { font-size: 1.125rem; }
-        
+
         .active-task {
             display: flex; align-items: center; gap: 12px;
             padding: 14px 16px;
@@ -177,6 +178,7 @@
             background: var(--accent-green);
             border-radius: 50%;
             animation: pulse 1.5s infinite;
+            flex-shrink: 0;
         }
         @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
         .active-task-info { flex: 1; }
@@ -214,7 +216,7 @@
             background: var(--bg-tertiary);
             border-radius: 8px;
         }
-        
+
         .product-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; }
         .product-card {
             background: var(--bg-tertiary);
@@ -239,7 +241,7 @@
         .product-status.down { background: rgba(239,68,68,0.15); color: var(--accent-red); }
         .product-status .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
         .product-checked { font-size: 0.75rem; color: var(--text-muted); }
-        
+
         .cron-table { width: 100%; }
         .cron-row {
             display: grid;
@@ -274,7 +276,7 @@
             margin-top: 8px;
         }
         .cron-row.expanded .cron-error-detail { display: block; }
-        
+
         .activity-list { display: flex; flex-direction: column; gap: 2px; }
         .activity-item {
             display: flex; gap: 12px;
@@ -285,7 +287,7 @@
         .activity-item:hover { background: var(--bg-tertiary); }
         .activity-time { font-size: 0.75rem; color: var(--text-muted); min-width: 60px; }
         .activity-event { font-size: 0.875rem; color: var(--text-secondary); }
-        
+
         .stats-row { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
         .stat-pill {
             display: flex; align-items: center; gap: 8px;
@@ -297,7 +299,7 @@
         }
         .stat-pill .num { font-weight: 600; }
         .stat-pill .label { color: var(--text-muted); }
-        
+
         @media (max-width: 600px) {
             .container { padding: 16px; }
             .card { padding: 20px; }
@@ -305,7 +307,7 @@
             .cron-schedule { display: none; }
             .header-status { flex-direction: column; align-items: flex-end; gap: 8px; }
         }
-        
+
         @keyframes flash-update { 0% { background-color: rgba(34,197,94,0.2); } 100% { background-color: transparent; } }
         .flash-update { animation: flash-update 1s ease-out; }
     </style>
@@ -335,15 +337,15 @@
                     <span class="spinner">⟳</span>
                     Update
                 </button>
-                <div class="connection-status">
+                <div class="connection-status polling" id="connection-status">
                     <span class="status-dot"></span>
-                    <span>Polling</span>
+                    <span id="connection-label">Polling</span>
                 </div>
                 <div class="last-updated" id="last-updated-text">Loading...</div>
             </div>
         </header>
 
-        <div class="alert-banner" id="action-required">
+        <div class="alert-banner empty" id="action-required">
             <div class="alert-header">
                 <span>🚨</span>
                 <h2>Action Required</h2>
@@ -351,10 +353,8 @@
             <div class="alert-items" id="action-items"></div>
         </div>
 
-
-
         <div class="stats-row" id="main-stats-row"></div>
-        
+
         <div class="grid">
             <div class="card">
                 <div class="card-header">
@@ -412,9 +412,9 @@
         // CONFIGURATION — Edit these values
         // ============================================
         const CONFIG = {
-            PIN: '13579',  // Change this!
-            DATA_URL: './data/dashboard-data.json',  // Path to your JSON file
-            REFRESH_INTERVAL: 30000  // 30 seconds
+            PIN: '13579',
+            DATA_URL: './data/dashboard-data.json',
+            REFRESH_INTERVAL: 30000
         };
         // ============================================
 
@@ -426,22 +426,21 @@
             const passwordError = document.getElementById('password-error');
             const pinInput = document.getElementById('pin-input');
 
-            passwordError.style.display = 'none'; // Clear previous error
-            passwordError.style.color = 'var(--accent-red)'; // Reset color
+            passwordError.style.display = 'none';
+            passwordError.style.color = 'var(--accent-red)';
 
             if (input === CONFIG.PIN) {
                 passwordError.textContent = '✅ Correct PIN!';
-                passwordError.style.color = 'var(--accent-green)'; // Change to green for success
+                passwordError.style.color = 'var(--accent-green)';
                 passwordError.style.display = 'block';
-                pinInput.value = ''; // Clear input for next time
+                pinInput.value = '';
 
-                // Briefly show success message before transitioning
                 setTimeout(() => {
                     document.getElementById('password-overlay').style.display = 'none';
                     document.getElementById('main-content').style.display = 'block';
                     sessionStorage.setItem('mc_authenticated', 'true');
                     initDashboard();
-                }, 1000); // 1-second delay
+                }, 1000);
             } else {
                 passwordError.textContent = '❌ Incorrect PIN. Try again.';
                 passwordError.style.display = 'block';
@@ -451,7 +450,6 @@
         }
 
         document.getElementById('access-dashboard-btn').addEventListener('click', checkPassword);
-
         document.getElementById('pin-input').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') checkPassword();
         });
@@ -460,6 +458,15 @@
             document.getElementById('password-overlay').style.display = 'none';
             document.getElementById('main-content').style.display = 'block';
             initDashboard();
+        }
+
+        function setConnectionStatus(state) {
+            const el = document.getElementById('connection-status');
+            const label = document.getElementById('connection-label');
+            el.className = 'connection-status ' + state;
+            if (state === 'ok') label.textContent = 'Live';
+            else if (state === 'error') label.textContent = 'Error';
+            else label.textContent = 'Polling';
         }
 
         function updateLastUpdatedTicker() {
@@ -475,18 +482,33 @@
         }
 
         async function fetchData() {
+            setConnectionStatus('polling');
+            const fullUrl = CONFIG.DATA_URL + `?_=${Date.now()}`;
+            // #region agent log
+            fetch('http://127.0.0.1:7738/ingest/9f13bd0b-5d61-4705-aba3-6a56b9805675',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'933824'},body:JSON.stringify({sessionId:'933824',location:'index.html:fetchData',message:'fetchData started',data:{fullUrl,protocol:location.protocol,origin:location.origin},timestamp:Date.now(),hypothesisId:'H2'})}).catch(()=>{});
+            // #endregion
             try {
-                const cacheBuster = `?_=${Date.now()}`;
-                const response = await fetch(CONFIG.DATA_URL + cacheBuster);
-                if (!response.ok) throw new Error('Failed to fetch');
+                const response = await fetch(fullUrl);
+                // #region agent log
+                fetch('http://127.0.0.1:7738/ingest/9f13bd0b-5d61-4705-aba3-6a56b9805675',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'933824'},body:JSON.stringify({sessionId:'933824',location:'index.html:fetchData',message:'fetch response',data:{ok:response.ok,status:response.status,statusText:response.statusText},timestamp:Date.now(),hypothesisId:'H3'})}).catch(()=>{});
+                // #endregion
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
+                // #region agent log
+                fetch('http://127.0.0.1:7738/ingest/9f13bd0b-5d61-4705-aba3-6a56b9805675',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'933824'},body:JSON.stringify({sessionId:'933824',location:'index.html:fetchData',message:'parse success',data:{lastUpdated:data.lastUpdated},timestamp:Date.now(),hypothesisId:'H4'})}).catch(()=>{});
+                // #endregion
                 lastUpdateTime = new Date(data.lastUpdated || Date.now());
                 renderDashboard(data);
+                setConnectionStatus('ok');
                 document.getElementById('main-content').classList.add('flash-update');
                 setTimeout(() => document.getElementById('main-content').classList.remove('flash-update'), 1000);
                 return true;
             } catch (err) {
+                // #region agent log
+                fetch('http://127.0.0.1:7738/ingest/9f13bd0b-5d61-4705-aba3-6a56b9805675',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'933824'},body:JSON.stringify({sessionId:'933824',location:'index.html:fetchData',message:'fetchData error',data:{name:err.name,message:err.message,type:typeof err},timestamp:Date.now(),hypothesisId:'H1_H4'})}).catch(()=>{});
+                // #endregion
                 console.error('Failed to fetch dashboard data:', err);
+                setConnectionStatus('error');
                 return false;
             }
         }
@@ -500,7 +522,6 @@
 
         function initDashboard() {
             fetchData();
-            updateLastUpdatedTicker();
             updateTickerInterval = setInterval(updateLastUpdatedTicker, 1000);
             setInterval(fetchData, CONFIG.REFRESH_INTERVAL);
         }
@@ -530,72 +551,76 @@
             const statsRow = document.getElementById('main-stats-row');
             if (data.stats) {
                 statsRow.innerHTML = `
-                    <div class=\"stat-pill\"><span class=\"num\">${data.stats.totalProducts || 0}</span><span class=\"label\">Products</span></div>
-                    <div class=\"stat-pill\"><span class=\"num\">${data.stats.activeCrons || 0}</span><span class=\"label\">Active Crons</span></div>
-                    <div class=\"stat-pill\"><span class=\"num\">${data.stats.pausedCrons || 0}</span><span class=\"label\">Paused</span></div>
-                    ${data.stats.errorCrons > 0 ? `<div class=\"stat-pill\" style=\"border-color:var(--accent-red);\"><span class=\"num\" style=\"color:var(--accent-red);\">${data.stats.errorCrons}</span><span class=\"label\">Errors</span></div>` : \'\'}
-                    <div class=\"stat-pill\"><span class=\"num\">${data.stats.activeSubagents || 0}</span><span class=\"label\">Subagents</span></div>
-                    <div class=\"stat-pill\"><span class=\"num\">${data.stats.totalTokens || 0}</span><span class=\"label\">Tokens</span></div>
-                    <div class=\"stat-pill\"><span class=\"num\">${data.stats.totalCost || \'$0.00\'}</span><span class=\"label\">Cost</span></div>
+                    <div class="stat-pill"><span class="num">${data.stats.totalProducts || 0}</span><span class="label">Products</span></div>
+                    <div class="stat-pill"><span class="num">${data.stats.activeCrons || 0}</span><span class="label">Active Crons</span></div>
+                    <div class="stat-pill"><span class="num">${data.stats.pausedCrons || 0}</span><span class="label">Paused</span></div>
+                    ${data.stats.errorCrons > 0 ? `<div class="stat-pill" style="border-color:var(--accent-red);"><span class="num" style="color:var(--accent-red);">${data.stats.errorCrons}</span><span class="label">Errors</span></div>` : ''}
+                    <div class="stat-pill"><span class="num">${data.stats.activeSubagents || 0}</span><span class="label">Subagents</span></div>
+                    <div class="stat-pill"><span class="num">${data.stats.totalTokens || 0}</span><span class="label">Tokens</span></div>
+                    <div class="stat-pill"><span class="num">${data.stats.totalCost || '$0.00'}</span><span class="label">Cost</span></div>
                 `;
             }
 
             // Planner Status
-            const plannerGoal = document.getElementById(\'planner-goal\');
-            const plannerAction = document.getElementById(\'planner-action\');
-            const plannerThought = document.getElementById(\'planner-thought\');
+            const plannerGoal = document.getElementById('planner-goal');
+            const plannerAction = document.getElementById('planner-action');
+            const plannerThought = document.getElementById('planner-thought');
             if (data.planner) {
-                plannerGoal.textContent = escapeHtml(data.planner.currentGoal || \'N/A\');
-                plannerAction.textContent = escapeHtml(data.planner.lastAction || \'N/A\');
-                plannerThought.textContent = escapeHtml(data.planner.thoughtProcess || \'N/A\');
+                plannerGoal.textContent = data.planner.currentGoal || 'N/A';
+                plannerAction.textContent = data.planner.lastAction || 'N/A';
+                plannerThought.textContent = data.planner.thoughtProcess || 'N/A';
             } else {
-                plannerGoal.textContent = \'N/A\';
-                plannerAction.textContent = \'N/A\';
-                plannerThought.textContent = \'N/A\';
+                plannerGoal.textContent = 'N/A';
+                plannerAction.textContent = 'N/A';
+                plannerThought.textContent = 'N/A';
             }
 
             // Active Sessions
-            const activeSessionsDiv = document.getElementById(\'active-sessions\');
+            const activeSessionsDiv = document.getElementById('active-sessions');
             if (data.activeSessions && data.activeSessions.length > 0) {
                 activeSessionsDiv.innerHTML = data.activeSessions.map(session => {
                     const started = new Date(session.startTime);
                     const mins = Math.floor((now - started) / 60000);
-                    const logsHtml = session.logs ? session.logs.map(log => `<div class="log-item">${escapeHtml(log)}</div>`).join('') : '';
+                    const logsHtml = session.logs
+                        ? session.logs.map(log => `<div class="log-item">${escapeHtml(log)}</div>`).join('')
+                        : '';
                     return `
-                        <div class=\"active-task\">
-                            <div class=\"active-indicator\"></div>
-                            <div class=\"active-task-info\">
-                                <div class=\"active-task-name\">Main Session: ${escapeHtml(session.displayName || session.key)}</div>
-                                <div class=\"active-task-meta\">${escapeHtml(session.task || 'N/A')} · ${escapeHtml(session.model || '')} · ${mins}m</div>
-                                ${logsHtml ? `<div class=\"task-logs\">${logsHtml}</div>` : ''}
+                        <div class="active-task">
+                            <div class="active-indicator"></div>
+                            <div class="active-task-info">
+                                <div class="active-task-name">Main Session: ${escapeHtml(session.displayName || session.key)}</div>
+                                <div class="active-task-meta">${escapeHtml(session.task || 'N/A')} · ${escapeHtml(session.model || '')} · ${mins}m</div>
+                                ${logsHtml ? `<div class="task-logs">${logsHtml}</div>` : ''}
                             </div>
                         </div>
                     `;
-                }).join(\'\');
+                }).join('');
             } else {
-                activeSessionsDiv.innerHTML = \'<div class=\"empty-state\">✨ No main sessions active</div>\';
+                activeSessionsDiv.innerHTML = '<div class="empty-state">✨ No main sessions active</div>';
             }
 
             // Active Subagents
-            const activeSubagentsDiv = document.getElementById(\'active-subagents\');
+            const activeSubagentsDiv = document.getElementById('active-subagents');
             if (data.subagents && data.subagents.length > 0) {
                 activeSubagentsDiv.innerHTML = data.subagents.map(subagent => {
                     const started = new Date(subagent.startTime);
                     const mins = Math.floor((now - started) / 60000);
-                    const logsHtml = subagent.logs ? subagent.logs.map(log => `<div class="log-item">${escapeHtml(log)}</div>`).join('') : '';
+                    const logsHtml = subagent.logs
+                        ? subagent.logs.map(log => `<div class="log-item">${escapeHtml(log)}</div>`).join('')
+                        : '';
                     return `
-                        <div class=\"active-task\">
-                            <div class=\"active-indicator\"></div>
-                            <div class=\"active-task-info\">
-                                <div class=\"active-task-name\">Subagent: ${escapeHtml(subagent.label || subagent.id)}</div>
-                                <div class=\"active-task-meta\">${escapeHtml(subagent.task || 'N/A')} · ${escapeHtml(subagent.model || '')} · ${mins}m</div>
-                                ${logsHtml ? `<div class=\"task-logs\">${logsHtml}</div>` : ''}
+                        <div class="active-task">
+                            <div class="active-indicator"></div>
+                            <div class="active-task-info">
+                                <div class="active-task-name">Subagent: ${escapeHtml(subagent.label || subagent.id)}</div>
+                                <div class="active-task-meta">${escapeHtml(subagent.task || 'N/A')} · ${escapeHtml(subagent.model || '')} · ${mins}m</div>
+                                ${logsHtml ? `<div class="task-logs">${logsHtml}</div>` : ''}
                             </div>
                         </div>
                     `;
-                }).join(\'\');
+                }).join('');
             } else {
-                activeSubagentsDiv.innerHTML = \'<div class=\"empty-state\">✨ No subagents active</div>\';
+                activeSubagentsDiv.innerHTML = '<div class="empty-state">✨ No subagents active</div>';
             }
 
             // Products
@@ -606,7 +631,7 @@
                         <div class="product-name">${escapeHtml(product.name)}</div>
                         <div class="product-status ${product.status}">
                             <span class="dot"></span>
-                            ${product.status.charAt(0).toUpperCase() + product.status.slice(1)}
+                            ${escapeHtml(product.status.charAt(0).toUpperCase() + product.status.slice(1))}
                         </div>
                         <div class="product-checked">Checked ${formatTime(product.lastChecked)}</div>
                     </a>
@@ -674,9 +699,9 @@
         }
 
         function escapeHtml(str) {
-            if (!str) return '';
+            if (str === null || str === undefined) return '';
             const div = document.createElement('div');
-            div.textContent = str;
+            div.textContent = String(str);
             return div.innerHTML;
         }
     </script>

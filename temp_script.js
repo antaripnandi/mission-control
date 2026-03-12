@@ -118,75 +118,75 @@
             }
 
             // Stats Row
-            const statsRow = document.getElementById(\'main-stats-row\');
+            const statsRow = document.getElementById('main-stats-row');
             if (data.stats) {
                 statsRow.innerHTML = `
                     <div class=\"stat-pill\"><span class=\"num\">${data.stats.totalProducts || 0}</span><span class=\"label\">Products</span></div>
                     <div class=\"stat-pill\"><span class=\"num\">${data.stats.activeCrons || 0}</span><span class=\"label\">Active Crons</span></div>
                     <div class=\"stat-pill\"><span class=\"num\">${data.stats.pausedCrons || 0}</span><span class=\"label\">Paused</span></div>
-                    ${data.stats.errorCrons > 0 ? `<div class=\"stat-pill\" style=\"border-color:var(--accent-red);\"><span class=\"num\" style=\"color:var(--accent-red);\">${data.stats.errorCrons}</span><span class=\"label\">Errors</span></div>` : \'\'}
+                    ${data.stats.errorCrons > 0 ? `<div class=\"stat-pill\" style=\"border-color:var(--accent-red);\"><span class=\"num\" style=\"color:var(--accent-red);\">${data.stats.errorCrons}</span><span class=\"label\">Errors</span></div>` : ''}
                     <div class=\"stat-pill\"><span class=\"num\">${data.stats.activeSubagents || 0}</span><span class=\"label\">Subagents</span></div>
                     <div class=\"stat-pill\"><span class=\"num\">${data.stats.totalTokens || 0}</span><span class=\"label\">Tokens</span></div>
-                    <div class=\"stat-pill\"><span class=\"num\">${data.stats.totalCost || \'$0.00\'}</span><span class=\"label\">Cost</span></div>
+                    <div class=\"stat-pill\"><span class=\"num\">${data.stats.totalCost || '$0.00'}</span><span class=\"label\">Cost</span></div>
                 `;
             }
 
             // Planner Status
-            const plannerGoal = document.getElementById(\'planner-goal\');
-            const plannerAction = document.getElementById(\'planner-action\');
-            const plannerThought = document.getElementById(\'planner-thought\');
+            const plannerGoal = document.getElementById('planner-goal');
+            const plannerAction = document.getElementById('planner-action');
+            const plannerThought = document.getElementById('planner-thought');
             if (data.planner) {
-                plannerGoal.textContent = escapeHtml(data.planner.currentGoal || \'N/A\');
-                plannerAction.textContent = escapeHtml(data.planner.lastAction || \'N/A\');
-                plannerThought.textContent = escapeHtml(data.planner.thoughtProcess || \'N/A\');
+                plannerGoal.textContent = escapeHtml(data.planner.currentGoal || 'N/A');
+                plannerAction.textContent = escapeHtml(data.planner.lastAction || 'N/A');
+                plannerThought.textContent = escapeHtml(data.planner.thoughtProcess || 'N/A');
             } else {
-                plannerGoal.textContent = \'N/A\';
-                plannerAction.textContent = \'N/A\';
-                plannerThought.textContent = \'N/A\';
+                plannerGoal.textContent = 'N/A';
+                plannerAction.textContent = 'N/A';
+                plannerThought.textContent = 'N/A';
             }
 
             // Active Sessions
-            const activeSessionsDiv = document.getElementById(\'active-sessions\');
+            const activeSessionsDiv = document.getElementById('active-sessions');
             if (data.activeSessions && data.activeSessions.length > 0) {
                 activeSessionsDiv.innerHTML = data.activeSessions.map(session => {
                     const started = new Date(session.startTime);
                     const mins = Math.floor((now - started) / 60000);
-                    const logsHtml = session.logs ? session.logs.map(log => `<div class=\"log-item\">${escapeHtml(log)}</div>`).join('') : '';
+                    const logsHtml = session.logs ? session.logs.map(log => `<div class="log-item">${escapeHtml(log)}</div>`).join('') : '';
                     return `
-                        <div class=\"active-task\">
-                            <div class=\"active-indicator\"></div>
-                            <div class=\"active-task-info\">
-                                <div class=\"active-task-name\">Main Session: ${escapeHtml(session.displayName || session.key)}</div>
-                                <div class=\"active-task-meta\">${escapeHtml(session.task || 'N/A')} · ${escapeHtml(session.model || '')} · ${mins}m</div>
-                                ${logsHtml ? `<div class=\"task-logs\">${logsHtml}</div>` : ''}
+                        <div class="active-task">
+                            <div class="active-indicator"></div>
+                            <div class="active-task-info">
+                                <div class="active-task-name">Main Session: ${escapeHtml(session.displayName || session.key)}</div>
+                                <div class="active-task-meta">${escapeHtml(session.task || 'N/A')} · ${escapeHtml(session.model || '')} · ${mins}m</div>
+                                ${logsHtml ? `<div class="task-logs">${logsHtml}</div>` : ''}
                             </div>
                         </div>
                     `;
-                }).join(\'\');
+                }).join('');
             } else {
-                activeSessionsDiv.innerHTML = \'<div class=\"empty-state\">✨ No main sessions active</div>\';
+                activeSessionsDiv.innerHTML = '<div class="empty-state">✨ No main sessions active</div>';
             }
 
             // Active Subagents
-            const activeSubagentsDiv = document.getElementById(\'active-subagents\');
+            const activeSubagentsDiv = document.getElementById('active-subagents');
             if (data.subagents && data.subagents.length > 0) {
                 activeSubagentsDiv.innerHTML = data.subagents.map(subagent => {
                     const started = new Date(subagent.startTime);
                     const mins = Math.floor((now - started) / 60000);
-                    const logsHtml = subagent.logs ? subagent.logs.map(log => `<div class=\"log-item\">${escapeHtml(log)}</div>`).join('') : '';
+                    const logsHtml = subagent.logs ? subagent.logs.map(log => `<div class="log-item">${escapeHtml(log)}</div>`).join('') : '';
                     return `
-                        <div class=\"active-task\">
-                            <div class=\"active-indicator\"></div>
-                            <div class=\"active-task-info\">
-                                <div class=\"active-task-name\">Subagent: ${escapeHtml(subagent.label || subagent.id)}</div>
-                                <div class=\"active-task-meta\">${escapeHtml(subagent.task || 'N/A')} · ${escapeHtml(subagent.model || '')} · ${mins}m</div>
-                                ${logsHtml ? `<div class=\"task-logs\">${logsHtml}</div>` : ''}
+                        <div class="active-task">
+                            <div class="active-indicator"></div>
+                            <div class="active-task-info">
+                                <div class="active-task-name">Subagent: ${escapeHtml(subagent.label || subagent.id)}</div>
+                                <div class="active-task-meta">${escapeHtml(subagent.task || 'N/A')} · ${escapeHtml(subagent.model || '')} · ${mins}m</div>
+                                ${logsHtml ? `<div class="task-logs">${logsHtml}</div>` : ''}
                             </div>
                         </div>
                     `;
-                }).join(\'\');
+                }).join('');
             } else {
-                activeSubagentsDiv.innerHTML = \'<div class=\"empty-state\">✨ No subagents active</div>\';
+                activeSubagentsDiv.innerHTML = '<div class="empty-state">✨ No subagents active</div>';
             }
 
             // Products
